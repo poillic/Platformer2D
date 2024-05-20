@@ -18,13 +18,14 @@ public class PlayerStateMachine : MonoBehaviour
     [Header( "Speeds" )]
     public float walkSpeed = 5f;
     public float runSpeed = 10f;
+    public float jumpForce = 15f;
 
     private bool _isJumping = false;
     private bool _isRunning = false;
     private bool _isAttacking = false;
     private Vector2 _direction = Vector2.zero;
     private float _currentSpeed = 0f;
-
+    private bool _jumpBuffer = false;
 
     // Start is called before the first frame update
     void Start()
@@ -40,6 +41,13 @@ public class PlayerStateMachine : MonoBehaviour
 
     private void FixedUpdate()
     {
+
+        if ( _jumpBuffer )
+        {
+            m_rb2d.velocity = new Vector2( m_rb2d.velocity.x, jumpForce );
+            _jumpBuffer = false;
+        }
+
         m_rb2d.velocity = new Vector2( _direction.x * _currentSpeed, m_rb2d.velocity.y );
     }
 
@@ -48,6 +56,7 @@ public class PlayerStateMachine : MonoBehaviour
         switch ( currentState )
         {
             case PlayerState.IDLE:
+                _currentSpeed = 0f;
                 break;
             case PlayerState.WALK:
                 _currentSpeed = walkSpeed;
@@ -56,6 +65,8 @@ public class PlayerStateMachine : MonoBehaviour
                 _currentSpeed = runSpeed;
                 break;
             case PlayerState.JUMP:
+                // m_rb2d.velocity = new Vector2( m_rb2d.velocity.x, jumpForce );
+                _jumpBuffer = true;
                 break;
             case PlayerState.FALL:
                 break;
