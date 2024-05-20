@@ -12,6 +12,7 @@ public class PlayerStateMachine : MonoBehaviour
     }
 
     public PlayerState currentState;
+    public Rigidbody2D _rb2d;
 
     private bool _isJumping = false;
     private bool _isRunning = false;
@@ -58,20 +59,103 @@ public class PlayerStateMachine : MonoBehaviour
         {
             case PlayerState.IDLE:
 
-                if( _isRunning && _direction.magnitude > 0f )
+                if( !_isRunning && _direction.magnitude > 0f )
+                {
+                    TransitionToState( PlayerState.WALK );
+                }
+                else if ( _isRunning && _direction.magnitude > 0f )
                 {
                     TransitionToState( PlayerState.RUN );
                 }
+                else if( _isJumping )
+                {
+                    TransitionToState( PlayerState.JUMP );
+                }
+                else if( _isAttacking )
+                {
+                    TransitionToState( PlayerState.ATTACK );
+                }
+
                 break;
             case PlayerState.WALK:
+
+                if ( _direction.magnitude == 0f )
+                {
+                    TransitionToState( PlayerState.IDLE );
+                }
+                else if ( _isRunning && _direction.magnitude > 0f )
+                {
+                    TransitionToState( PlayerState.RUN );
+                }
+                else if ( _isJumping )
+                {
+                    TransitionToState( PlayerState.JUMP );
+                }
+                else if ( _isAttacking )
+                {
+                    TransitionToState( PlayerState.ATTACK );
+                }
+
                 break;
             case PlayerState.RUN:
+
+                if ( _direction.magnitude == 0f )
+                {
+                    TransitionToState( PlayerState.IDLE );
+                }
+                else if ( !_isRunning && _direction.magnitude > 0f )
+                {
+                    TransitionToState( PlayerState.WALK );
+                }
+                else if ( _isJumping )
+                {
+                    TransitionToState( PlayerState.JUMP );
+                }
+                else if ( _isAttacking )
+                {
+                    TransitionToState( PlayerState.ATTACK );
+                }
+
                 break;
             case PlayerState.JUMP:
+
+                if ( _rb2d.velocity.y < 0f )
+                {
+                    TransitionToState( PlayerState.FALL );
+                }
+
                 break;
             case PlayerState.FALL:
+
+                if ( _direction.magnitude == 0f )
+                {
+                    TransitionToState( PlayerState.IDLE );
+                }
+                else if ( !_isRunning && _direction.magnitude > 0f )
+                {
+                    TransitionToState( PlayerState.WALK );
+                }
+                else if ( _isRunning && _direction.magnitude > 0f )
+                {
+                    TransitionToState( PlayerState.RUN );
+                }
+
                 break;
             case PlayerState.ATTACK:
+
+                if ( _direction.magnitude == 0f )
+                {
+                    TransitionToState( PlayerState.IDLE );
+                }
+                else if ( !_isRunning && _direction.magnitude > 0f )
+                {
+                    TransitionToState( PlayerState.WALK );
+                }
+                else if ( _isRunning && _direction.magnitude > 0f )
+                {
+                    TransitionToState( PlayerState.RUN );
+                }
+
                 break;
             default:
                 break;
