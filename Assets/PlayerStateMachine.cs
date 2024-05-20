@@ -75,6 +75,10 @@ public class PlayerStateMachine : MonoBehaviour
                 {
                     TransitionToState( PlayerState.ATTACK );
                 }
+                else if ( _rb2d.velocity.y < 0f )
+                {
+                    TransitionToState( PlayerState.FALL );
+                }
 
                 break;
             case PlayerState.WALK:
@@ -95,6 +99,10 @@ public class PlayerStateMachine : MonoBehaviour
                 {
                     TransitionToState( PlayerState.ATTACK );
                 }
+                else if ( _rb2d.velocity.y < 0f )
+                {
+                    TransitionToState( PlayerState.FALL );
+                }
 
                 break;
             case PlayerState.RUN:
@@ -114,6 +122,10 @@ public class PlayerStateMachine : MonoBehaviour
                 else if ( _isAttacking )
                 {
                     TransitionToState( PlayerState.ATTACK );
+                }
+                else if ( _rb2d.velocity.y < 0f )
+                {
+                    TransitionToState( PlayerState.FALL );
                 }
 
                 break;
