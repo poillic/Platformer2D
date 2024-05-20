@@ -12,25 +12,36 @@ public class PlayerStateMachine : MonoBehaviour
     }
 
     public PlayerState currentState;
-    public Rigidbody2D _rb2d;
+    public Rigidbody2D m_rb2d;
+    public Animator m_animator;
+
+    [Header( "Speeds" )]
+    public float walkSpeed = 5f;
+    public float runSpeed = 10f;
 
     private bool _isJumping = false;
     private bool _isRunning = false;
     private bool _isAttacking = false;
     private Vector2 _direction = Vector2.zero;
+    private float _currentSpeed = 0f;
+
 
     // Start is called before the first frame update
     void Start()
     {
-        
+
     }
 
     // Update is called once per frame
     void Update()
     {
-        
+        OnStateUpdate();
     }
 
+    private void FixedUpdate()
+    {
+        m_rb2d.velocity = new Vector2( _direction.x * _currentSpeed, m_rb2d.velocity.y );
+    }
 
     private void OnStateEnter()
     {
@@ -39,8 +50,10 @@ public class PlayerStateMachine : MonoBehaviour
             case PlayerState.IDLE:
                 break;
             case PlayerState.WALK:
+                _currentSpeed = walkSpeed;
                 break;
             case PlayerState.RUN:
+                _currentSpeed = runSpeed;
                 break;
             case PlayerState.JUMP:
                 break;
@@ -75,7 +88,7 @@ public class PlayerStateMachine : MonoBehaviour
                 {
                     TransitionToState( PlayerState.ATTACK );
                 }
-                else if ( _rb2d.velocity.y < 0f )
+                else if ( m_rb2d.velocity.y < 0f )
                 {
                     TransitionToState( PlayerState.FALL );
                 }
@@ -99,7 +112,7 @@ public class PlayerStateMachine : MonoBehaviour
                 {
                     TransitionToState( PlayerState.ATTACK );
                 }
-                else if ( _rb2d.velocity.y < 0f )
+                else if ( m_rb2d.velocity.y < 0f )
                 {
                     TransitionToState( PlayerState.FALL );
                 }
@@ -123,7 +136,7 @@ public class PlayerStateMachine : MonoBehaviour
                 {
                     TransitionToState( PlayerState.ATTACK );
                 }
-                else if ( _rb2d.velocity.y < 0f )
+                else if ( m_rb2d.velocity.y < 0f )
                 {
                     TransitionToState( PlayerState.FALL );
                 }
@@ -131,7 +144,7 @@ public class PlayerStateMachine : MonoBehaviour
                 break;
             case PlayerState.JUMP:
 
-                if ( _rb2d.velocity.y < 0f )
+                if ( m_rb2d.velocity.y < 0f )
                 {
                     TransitionToState( PlayerState.FALL );
                 }
@@ -260,5 +273,9 @@ public class PlayerStateMachine : MonoBehaviour
             default:
                 break;
         }
+    }
+
+    private void OnDrawGizmos()
+    {
     }
 }
