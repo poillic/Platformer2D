@@ -32,6 +32,7 @@ public class PlayerStateMachine : MonoBehaviour
     private float _currentSpeed = 0f;
     private bool _jumpBuffer = false;
     private bool _isGrounded = false;
+    public bool attackFinish = false;
 
     // Start is called before the first frame update
     void Start()
@@ -88,21 +89,27 @@ public class PlayerStateMachine : MonoBehaviour
         switch ( currentState )
         {
             case PlayerState.IDLE:
-                _currentSpeed = 0f;
+                m_animator.SetFloat( "velocityX", 0f );
                 break;
             case PlayerState.WALK:
                 _currentSpeed = walkSpeed;
+                m_animator.SetFloat( "velocityX", 0.5f );
                 break;
             case PlayerState.RUN:
                 _currentSpeed = runSpeed;
+                m_animator.SetFloat( "velocityX", 1f );
                 break;
             case PlayerState.JUMP:
                 // m_rb2d.velocity = new Vector2( m_rb2d.velocity.x, jumpForce );
                 _jumpBuffer = true;
+                m_animator.SetInteger( "velocityY", 1 );
                 break;
             case PlayerState.FALL:
+                m_animator.SetInteger( "velocityY", -1 );
                 break;
             case PlayerState.ATTACK:
+                attackFinish = false;
+                m_animator.SetBool( "Attacking", true );
                 break;
             default:
                 break;
@@ -214,17 +221,20 @@ public class PlayerStateMachine : MonoBehaviour
                 break;
             case PlayerState.ATTACK:
 
-                if ( _direction.magnitude == 0f )
+                if( attackFinish )
                 {
-                    TransitionToState( PlayerState.IDLE );
-                }
-                else if ( !_isRunning && _direction.magnitude > 0f )
-                {
-                    TransitionToState( PlayerState.WALK );
-                }
-                else if ( _isRunning && _direction.magnitude > 0f )
-                {
-                    TransitionToState( PlayerState.RUN );
+                    if ( _direction.magnitude == 0f )
+                    {
+                        TransitionToState( PlayerState.IDLE );
+                    }
+                    else if ( !_isRunning && _direction.magnitude > 0f )
+                    {
+                        TransitionToState( PlayerState.WALK );
+                    }
+                    else if ( _isRunning && _direction.magnitude > 0f )
+                    {
+                        TransitionToState( PlayerState.RUN );
+                    }
                 }
 
                 break;
@@ -246,8 +256,10 @@ public class PlayerStateMachine : MonoBehaviour
             case PlayerState.JUMP:
                 break;
             case PlayerState.FALL:
+                m_animator.SetInteger( "velocityY", 0 );
                 break;
             case PlayerState.ATTACK:
+                m_animator.SetBool( "Attacking", false );
                 break;
             default:
                 break;
