@@ -20,12 +20,18 @@ public class PlayerStateMachine : MonoBehaviour
     public float runSpeed = 10f;
     public float jumpForce = 15f;
 
+    [Header( "Ground Detection" )]
+    public LayerMask groundLayer;
+    public Vector2 groundCheckerSize = Vector2.one;
+    public Transform groundCheckerTransform;
+
     private bool _isJumping = false;
     private bool _isRunning = false;
     private bool _isAttacking = false;
     private Vector2 _direction = Vector2.zero;
     private float _currentSpeed = 0f;
     private bool _jumpBuffer = false;
+    private bool _isGrounded = false;
 
     // Start is called before the first frame update
     void Start()
@@ -36,6 +42,17 @@ public class PlayerStateMachine : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+
+        Collider2D ground = Physics2D.OverlapBox( groundCheckerTransform.position, groundCheckerSize, 0f, groundLayer );
+
+        if( ground != null )
+        {
+            _isGrounded = true;
+        }else
+        {
+            _isGrounded = false;
+        }
+
         OnStateUpdate();
     }
 
@@ -49,6 +66,21 @@ public class PlayerStateMachine : MonoBehaviour
         }
 
         m_rb2d.velocity = new Vector2( _direction.x * _currentSpeed, m_rb2d.velocity.y );
+    }
+
+
+    private void OnDrawGizmos()
+    {
+        if( _isGrounded )
+        {
+            Gizmos.color = Color.green;
+        }
+        else
+        {
+            Gizmos.color = Color.red;
+        }
+
+        Gizmos.DrawCube( groundCheckerTransform.position, groundCheckerSize );
     }
 
     private void OnStateEnter()
@@ -91,17 +123,17 @@ public class PlayerStateMachine : MonoBehaviour
                 {
                     TransitionToState( PlayerState.RUN );
                 }
-                else if( _isJumping )
+                else if( _isJumping && _isGrounded )
                 {
                     TransitionToState( PlayerState.JUMP );
                 }
-                else if( _isAttacking )
-                {
-                    TransitionToState( PlayerState.ATTACK );
-                }
-                else if ( m_rb2d.velocity.y < 0f )
+                else if ( m_rb2d.velocity.y < 0f && !_isGrounded )
                 {
                     TransitionToState( PlayerState.FALL );
+                }
+                else if( _isAttacking && _isGrounded )
+                {
+                    TransitionToState( PlayerState.ATTACK );
                 }
 
                 break;
@@ -115,15 +147,15 @@ public class PlayerStateMachine : MonoBehaviour
                 {
                     TransitionToState( PlayerState.RUN );
                 }
-                else if ( _isJumping )
+                else if ( _isJumping && _isGrounded )
                 {
                     TransitionToState( PlayerState.JUMP );
                 }
-                else if ( _isAttacking )
+                else if ( _isAttacking && _isGrounded )
                 {
                     TransitionToState( PlayerState.ATTACK );
                 }
-                else if ( m_rb2d.velocity.y < 0f )
+                else if ( m_rb2d.velocity.y < 0f && !_isGrounded )
                 {
                     TransitionToState( PlayerState.FALL );
                 }
@@ -139,15 +171,15 @@ public class PlayerStateMachine : MonoBehaviour
                 {
                     TransitionToState( PlayerState.WALK );
                 }
-                else if ( _isJumping )
+                else if ( _isJumping && _isGrounded )
                 {
                     TransitionToState( PlayerState.JUMP );
                 }
-                else if ( _isAttacking )
+                else if ( _isAttacking && _isGrounded )
                 {
                     TransitionToState( PlayerState.ATTACK );
                 }
-                else if ( m_rb2d.velocity.y < 0f )
+                else if ( m_rb2d.velocity.y < 0f && !_isGrounded )
                 {
                     TransitionToState( PlayerState.FALL );
                 }
@@ -155,7 +187,7 @@ public class PlayerStateMachine : MonoBehaviour
                 break;
             case PlayerState.JUMP:
 
-                if ( m_rb2d.velocity.y < 0f )
+                if ( m_rb2d.velocity.y < 0f && !_isGrounded )
                 {
                     TransitionToState( PlayerState.FALL );
                 }
@@ -163,17 +195,20 @@ public class PlayerStateMachine : MonoBehaviour
                 break;
             case PlayerState.FALL:
 
-                if ( _direction.magnitude == 0f )
+                if( _isGrounded )
                 {
-                    TransitionToState( PlayerState.IDLE );
-                }
-                else if ( !_isRunning && _direction.magnitude > 0f )
-                {
-                    TransitionToState( PlayerState.WALK );
-                }
-                else if ( _isRunning && _direction.magnitude > 0f )
-                {
-                    TransitionToState( PlayerState.RUN );
+                    if ( _direction.magnitude == 0f )
+                    {
+                        TransitionToState( PlayerState.IDLE );
+                    }
+                    else if ( !_isRunning && _direction.magnitude > 0f )
+                    {
+                        TransitionToState( PlayerState.WALK );
+                    }
+                    else if ( _isRunning && _direction.magnitude > 0f )
+                    {
+                        TransitionToState( PlayerState.RUN );
+                    }
                 }
 
                 break;
@@ -286,7 +321,4 @@ public class PlayerStateMachine : MonoBehaviour
         }
     }
 
-    private void OnDrawGizmos()
-    {
-    }
 }
