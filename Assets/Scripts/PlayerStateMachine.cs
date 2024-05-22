@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class PlayerStateMachine : MonoBehaviour
 {
 
@@ -19,11 +20,14 @@ public class PlayerStateMachine : MonoBehaviour
     public float walkSpeed = 5f;
     public float runSpeed = 10f;
     public float jumpForce = 15f;
+    public float fallGravityScale = 2.5f;
 
     [Header( "Ground Detection" )]
     public LayerMask groundLayer;
     public Vector2 groundCheckerSize = Vector2.one;
     public Transform groundCheckerTransform;
+
+    public Transform cameraAnchor;
 
     private bool _isJumping = false;
     private bool _isRunning = false;
@@ -43,8 +47,17 @@ public class PlayerStateMachine : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if( _direction.x != 0 )
+        {
+            transform.localScale = new Vector3( _direction.x, transform.localScale.y, transform.localScale.z );
+        }
 
         Collider2D ground = Physics2D.OverlapBox( groundCheckerTransform.position, groundCheckerSize, 0f, groundLayer );
+
+        Vector3 desiredPosition = cameraAnchor.position + (Vector3) m_rb2d.velocity.normalized;
+
+        Vector3 velocity = Vector3.zero;
+        cameraAnchor.position = Vector3.SmoothDamp( cameraAnchor.position, desiredPosition, ref velocity, 1f );
 
         if( ground != null )
         {
@@ -106,8 +119,10 @@ public class PlayerStateMachine : MonoBehaviour
                 break;
             case PlayerState.FALL:
                 m_animator.SetInteger( "velocityY", -1 );
+                m_rb2d.gravityScale = fallGravityScale;
                 break;
             case PlayerState.ATTACK:
+                _currentSpeed = 0f;
                 attackFinish = false;
                 m_animator.SetBool( "Attacking", true );
                 break;
@@ -257,6 +272,7 @@ public class PlayerStateMachine : MonoBehaviour
                 break;
             case PlayerState.FALL:
                 m_animator.SetInteger( "velocityY", 0 );
+                m_rb2d.gravityScale = 1f;
                 break;
             case PlayerState.ATTACK:
                 m_animator.SetBool( "Attacking", false );
