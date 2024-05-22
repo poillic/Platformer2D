@@ -10,6 +10,7 @@ public class InventorySO : ScriptableObject
 
     public bool keyObtained = false;
 
+    
     public void Hello()
     {
         Debug.Log( $"Bonjour je suis {m_name} et j'ai {age}ans" );
@@ -18,5 +19,11 @@ public class InventorySO : ScriptableObject
     public void KeyPickUp()
     {
         keyObtained = true;
+    }
+
+    [ContextMenu("Rizet")]
+    public void Rizet()
+    {
+        Debug.Log( "Fak u" );
     }
 }
