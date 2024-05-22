@@ -41,7 +41,6 @@ public class PlayerStateMachine : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
     }
 
     // Update is called once per frame
@@ -54,10 +53,10 @@ public class PlayerStateMachine : MonoBehaviour
 
         Collider2D ground = Physics2D.OverlapBox( groundCheckerTransform.position, groundCheckerSize, 0f, groundLayer );
 
-        Vector3 desiredPosition = cameraAnchor.position + (Vector3) m_rb2d.velocity.normalized;
+        Vector3 desiredPosition = transform.position + (Vector3) m_rb2d.velocity.normalized * 3f;
 
         Vector3 velocity = Vector3.zero;
-        cameraAnchor.position = Vector3.SmoothDamp( cameraAnchor.position, desiredPosition, ref velocity, 1f );
+        cameraAnchor.position = Vector3.SmoothDamp( cameraAnchor.position, desiredPosition, ref velocity, 0.1f );
 
         if( ground != null )
         {
