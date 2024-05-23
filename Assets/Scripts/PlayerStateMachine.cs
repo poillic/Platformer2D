@@ -143,6 +143,7 @@ public class PlayerStateMachine : MonoBehaviour
                 _canDash = false;
                 _isDashing = false;
                 m_trailRenderer.emitting = true;
+                m_animator.SetBool( "Dashing", true );
                 break;
             default:
                 break;
@@ -346,6 +347,7 @@ public class PlayerStateMachine : MonoBehaviour
                 m_rb2d.velocity = Vector2.zero;
                 m_rb2d.gravityScale = 1f;
                 m_trailRenderer.emitting = false;
+                m_animator.SetBool( "Dashing", false );
                 break;
             default:
                 break;
