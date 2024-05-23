@@ -123,11 +123,6 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
---- !u!4 &222563148 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 3903094354071446926, guid: 764d66d243bd1994594dadf8c35fb902, type: 3}
-  m_PrefabInstance: {fileID: 1004063116596080554}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &286792860
 GameObject:
   m_ObjectHideFlags: 0
@@ -137,10 +132,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 286792861}
+  - component: {fileID: 286792862}
   m_Layer: 0
-  m_Name: GameObject
+  m_Name: CameraAnchor
   m_TagString: Untagged
-  m_Icon: {fileID: 0}
+  m_Icon: {fileID: 7174288486110832750, guid: 0000000000000000d000000000000000, type: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
@@ -159,6 +155,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &286792862
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 286792860}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c9d9da296aa13c84983aa5c7f085ea63, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerBody: {fileID: 2107402058}
 --- !u!1 &382179086
 GameObject:
   m_ObjectHideFlags: 0
@@ -377,7 +386,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bf387c6d27f756140a73ed05538eb59b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 222563148}
+  target: {fileID: 286792861}
+  player: {fileID: 2107402059}
   offset: {x: 0, y: 0, z: -10}
 --- !u!1 &1101063126
 GameObject:
@@ -5088,6 +5098,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   inventory: {fileID: 11400000, guid: 81045696f6532774aa39b6ff91c0b7df, type: 2}
+--- !u!50 &2107402058 stripped
+Rigidbody2D:
+  m_CorrespondingSourceObject: {fileID: 3976819137006142534, guid: 764d66d243bd1994594dadf8c35fb902, type: 3}
+  m_PrefabInstance: {fileID: 1004063116596080554}
+  m_PrefabAsset: {fileID: 0}
+--- !u!4 &2107402059 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 7648765389862918089, guid: 764d66d243bd1994594dadf8c35fb902, type: 3}
+  m_PrefabInstance: {fileID: 1004063116596080554}
+  m_PrefabAsset: {fileID: 0}
 --- !u!96 &2107402060 stripped
 TrailRenderer:
   m_CorrespondingSourceObject: {fileID: 5055498409109143370, guid: 764d66d243bd1994594dadf8c35fb902, type: 3}
@@ -5109,6 +5129,10 @@ PrefabInstance:
       propertyPath: walkSpeed
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 1848667613564698372, guid: 764d66d243bd1994594dadf8c35fb902, type: 3}
+      propertyPath: cameraAnchor
+      value: 
+      objectReference: {fileID: 286792861}
     - target: {fileID: 1848667613564698372, guid: 764d66d243bd1994594dadf8c35fb902, type: 3}
       propertyPath: m_trailRenderer
       value: 

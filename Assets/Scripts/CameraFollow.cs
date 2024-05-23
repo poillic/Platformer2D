@@ -6,6 +6,7 @@ public class CameraFollow : MonoBehaviour
 {
 
     public Transform target;
+    public Transform player;
     public Vector3 offset;
     // Start is called before the first frame update
     void Start()
@@ -16,6 +17,7 @@ public class CameraFollow : MonoBehaviour
     // Update is called once per frame
     void LateUpdate()
     {
+        Vector3 vel = Vector3.zero;
         transform.position = target.position + offset;
     }
 }

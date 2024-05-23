@@ -64,7 +64,7 @@ public class PlayerStateMachine : MonoBehaviour
 
         Collider2D ground = Physics2D.OverlapBox( groundCheckerTransform.position, groundCheckerSize, 0f, groundLayer );
 
-        Vector3 desiredPosition = transform.position + (Vector3) m_rb2d.velocity.normalized * 3f;
+        Vector3 desiredPosition = transform.position + (Vector3) m_rb2d.velocity;
 
         Vector3 velocity = Vector3.zero;
         cameraAnchor.position = Vector3.SmoothDamp( cameraAnchor.position, desiredPosition, ref velocity, 0.1f );
