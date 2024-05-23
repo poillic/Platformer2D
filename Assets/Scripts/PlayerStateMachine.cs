@@ -37,6 +37,7 @@ public class PlayerStateMachine : MonoBehaviour
     private bool _jumpBuffer = false;
     private bool _isGrounded = false;
     public bool attackFinish = false;
+    private int jumpQty = 0;
 
     // Start is called before the first frame update
     void Start()
@@ -76,6 +77,7 @@ public class PlayerStateMachine : MonoBehaviour
         {
             m_rb2d.velocity = new Vector2( m_rb2d.velocity.x, jumpForce );
             _jumpBuffer = false;
+            jumpQty++;
         }
 
         m_rb2d.velocity = new Vector2( _direction.x * _currentSpeed, m_rb2d.velocity.y );
@@ -115,6 +117,7 @@ public class PlayerStateMachine : MonoBehaviour
                 // m_rb2d.velocity = new Vector2( m_rb2d.velocity.x, jumpForce );
                 _jumpBuffer = true;
                 m_animator.SetInteger( "velocityY", 1 );
+
                 break;
             case PlayerState.FALL:
                 m_animator.SetInteger( "velocityY", -1 );
@@ -208,7 +211,7 @@ public class PlayerStateMachine : MonoBehaviour
                 break;
             case PlayerState.JUMP:
 
-                if ( m_rb2d.velocity.y < 0f && !_isGrounded )
+                if ( m_rb2d.velocity.y < 0f && !_isGrounded && !_jumpBuffer )
                 {
                     TransitionToState( PlayerState.FALL );
                 }
@@ -218,6 +221,7 @@ public class PlayerStateMachine : MonoBehaviour
 
                 if( _isGrounded )
                 {
+                    jumpQty = 0;
                     if ( _direction.magnitude == 0f )
                     {
                         TransitionToState( PlayerState.IDLE );
@@ -230,6 +234,10 @@ public class PlayerStateMachine : MonoBehaviour
                     {
                         TransitionToState( PlayerState.RUN );
                     }
+                }
+                else if ( jumpQty < 2 && _isJumping )
+                {
+                    TransitionToState( PlayerState.JUMP );
                 }
 
                 break;
